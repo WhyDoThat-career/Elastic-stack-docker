@@ -1,0 +1,6 @@
+ - pipeline.id: kafka
+   pipeline.workers: 1
+   path.config: "/usr/share/logstash/pipeline/logstash-kafka.conf"
+ - pipeline.id: job_detail
+   pipeline.workers: 1
+   path.config: "/usr/share/logstash/pipeline/logstash-jobdetail.conf"

@@ -2,6 +2,7 @@ version: '3.2'
 
 services:
   elasticsearch:
+    restart: always
     build:
       context: elasticsearch/
       args:
@@ -19,7 +20,7 @@ services:
       - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTIC_PASSWORD: password
+      ELASTIC_PASSWORD: #password
       # Use single node discovery in order to disable production mode and avoid bootstrap checks
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
@@ -27,6 +28,7 @@ services:
       - elk
 
   logstash:
+    restart: always
     build:
       context: logstash/
       args:
@@ -35,11 +37,13 @@ services:
       - type: bind
         source: ./logstash/config/logstash.yml
         target: /usr/share/logstash/config/logstash.yml
+      - type: bind
+        source: ./logstash/config/pipelines.yml
+        target: /usr/share/logstash/config/pipelines.yml
         read_only: true
       - type: bind
         source: ./logstash/pipeline
         target: /usr/share/logstash/pipeline
-        read_only: true
     ports:
       - "5044:5044"
       - "5000:5000/tcp"
@@ -53,6 +57,7 @@ services:
       - elasticsearch
 
   kibana:
+    restart: always
     build:
       context: kibana/
       args:
